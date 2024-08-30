@@ -1,5 +1,6 @@
 <script>
     import Task from "../lib/Task.svelte";
+    import preloader from "$lib/assets/preloader.svg";
 
     const getFormattedLocalTime = (millisecondsSinceEpoch) => {
         const dateFromMilliseconds = new Date(millisecondsSinceEpoch);
@@ -90,7 +91,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div on:click={clickHandler}>
     {#await getTasks()}
-    <img style="width: 50%; margin: auto;" src="../src/assets/preloader.svg" alt="preloader">
+    <img style="width: 50%; margin: auto;" src={preloader} alt="preloader">
     {:then}
         {#each tasks as { content, date, important, completed, _id, last_updated }}
             <Task {content} date={getFormattedLocalTime(date)} {important} {completed} {_id} last_updated={getFormattedLocalTime(last_updated)} />
