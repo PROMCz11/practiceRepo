@@ -48,25 +48,29 @@
     //     }
     // ]
 
-    fetch("https://task-manager-back-end-7gbe.onrender.com/api/tasks", {
-        method: "POST",
-        body: JSON.stringify({
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI2NmQwOWJkY2Q2MDIyYTZhOTc5OTY4YWYiLCJpYXQiOjE3MjQ5NjQ4NTMsImV4cCI6NDMxNjk2NDg1M30.0HquznnuvoYXtpZrtBsnpdCBZvPqcWpzS_vBTZx3v_Q"
-        }),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8"
-        }
-    })
-    .then(res => res.json())
-    .then(json => {
+    const getTasks = async () => {
+        const res = await fetch("https://task-manager-back-end-7gbe.onrender.com/api/tasks", {
+            method: "POST",
+            body: JSON.stringify({
+                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI2NmQwOWJkY2Q2MDIyYTZhOTc5OTY4YWYiLCJpYXQiOjE3MjQ5NjQ4NTMsImV4cCI6NDMxNjk2NDg1M30.0HquznnuvoYXtpZrtBsnpdCBZvPqcWpzS_vBTZx3v_Q"
+            }),
+            headers: {
+            "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        const json = await res.json();
         if(json.status) {
             tasks = json.data.tasks;
+            return json.data.tasks;
         }
-        else console.log(json.message);
-    })
-    .catch(err => console.log(err));
 
-    const click = e => {
+        else {
+            console.log(json.message);
+            return null;
+        }
+    }
+
+    const clickHandler = e => {
         const target = e.target;
         if(target.classList.contains("important-toggle")) {
             const id = target.parentElement.parentElement.id;
@@ -84,10 +88,12 @@
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div on:click={click}>
-    {#each tasks as { content, date, important, completed, _id, last_updated }}
-        <Task {content} date={getFormattedLocalTime(date)} {important} {completed} {_id} last_updated={getFormattedLocalTime(last_updated)} />
-    {/each}
+<div on:click={clickHandler}>
+    {#await getTasks()}
+    <img style="width: 50%; margin: auto;" src="./src/assets/preloader.svg" alt="preloader">
+    {:then}
+        {#each tasks as { content, date, important, completed, _id, last_updated }}
+            <Task {content} date={getFormattedLocalTime(date)} {important} {completed} {_id} last_updated={getFormattedLocalTime(last_updated)} />
+        {/each}
+    {/await}
 </div>
-
-Added after launch, again
