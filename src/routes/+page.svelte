@@ -90,7 +90,7 @@
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div on:click={clickHandler}>
     {#await getTasks()}
-    <img style="width: 50%; margin: auto;" src="./src/assets/preloader.svg" alt="preloader">
+    <img style="width: 50%; margin: auto;" src="../src/assets/preloader.svg" alt="preloader">
     {:then}
         {#each tasks as { content, date, important, completed, _id, last_updated }}
             <Task {content} date={getFormattedLocalTime(date)} {important} {completed} {_id} last_updated={getFormattedLocalTime(last_updated)} />
