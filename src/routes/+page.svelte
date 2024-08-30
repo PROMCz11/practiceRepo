@@ -89,3 +89,5 @@
         <Task {content} date={getFormattedLocalTime(date)} {important} {completed} {_id} last_updated={getFormattedLocalTime(last_updated)} />
     {/each}
 </div>
+
+Added after launch
