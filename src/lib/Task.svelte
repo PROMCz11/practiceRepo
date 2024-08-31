@@ -28,14 +28,15 @@
 
 <div class="task" id="{_id}">
     <div>
-        <p contenteditable class="content" on:keydown={e => {
+        <p bind:textContent={content} contenteditable class="content" on:keydown={e => {
             if (e.key === 'Enter') {
                 e.preventDefault(); 
                 e.target.blur();
                 updateTaskContent(content);
+                console.log(content);
                 // document.execCommand('formatBlock', false, 'p');
             }
-        }}>{content}</p>
+        }}></p>
         <p class="date">{date}</p>
         <p class="last_updated">{last_updated}</p>
     </div>

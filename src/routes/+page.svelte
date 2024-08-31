@@ -64,3 +64,5 @@
 <div on:click={clickHandler}>
     <TaskContainer bind:tasks={tasks} />
 </div>
+
+v 1.0.1
