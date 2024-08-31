@@ -4,8 +4,10 @@
     let tasks;
 
     const toggleTask = (id, toggleCompleted) => {
+        const taskIndex = tasks.indexOf(tasks.find(task => task._id === id));
+        const newLast_updated = new Date().getTime();
+        tasks[taskIndex].last_updated = newLast_updated;
         if(toggleCompleted) {
-            const taskIndex = tasks.indexOf(tasks.find(task => task._id === id));
             const newCompleted = !tasks[taskIndex].completed
             tasks[taskIndex].completed = newCompleted;
             fetch(`https://task-manager-back-end-7gbe.onrender.com/api/tasks/update/${id}`, {
@@ -13,7 +15,7 @@
                 body: JSON.stringify({
                     token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI2NmQwOWJkY2Q2MDIyYTZhOTc5OTY4YWYiLCJpYXQiOjE3MjQ5NjQ4NTMsImV4cCI6NDMxNjk2NDg1M30.0HquznnuvoYXtpZrtBsnpdCBZvPqcWpzS_vBTZx3v_Q",
                     completed: newCompleted,
-                    last_updated: new Date().getTime()
+                    last_updated: newLast_updated
                 }),
                 headers: {
                     "Content-type": "application/json; charset=UTF-8"
@@ -24,7 +26,6 @@
             .catch(err => console.log(err));
         }
         else {
-            const taskIndex = tasks.indexOf(tasks.find(task => task._id === id));
             const newImportant = !tasks[taskIndex].important;
             tasks[taskIndex].important = newImportant;
             fetch(`https://task-manager-back-end-7gbe.onrender.com/api/tasks/update/${id}`, {
@@ -32,7 +33,7 @@
                 body: JSON.stringify({
                     token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI2NmQwOWJkY2Q2MDIyYTZhOTc5OTY4YWYiLCJpYXQiOjE3MjQ5NjQ4NTMsImV4cCI6NDMxNjk2NDg1M30.0HquznnuvoYXtpZrtBsnpdCBZvPqcWpzS_vBTZx3v_Q",
                     important: newImportant,
-                    last_updated: new Date().getTime()
+                    last_updated: newLast_updated
                 }),
                 headers: {
                     "Content-type": "application/json; charset=UTF-8"

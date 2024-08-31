@@ -49,6 +49,6 @@
     <img style="width: 50%; margin: auto;" src={preloader} alt="preloader">
 {:then}
     {#each tasks as { content, date, important, completed, _id, last_updated }}
-        <Task {isLoadedFromServer} {content} date={getFormattedLocalTime(date)} {important} {completed} {_id} last_updated={getFormattedLocalTime(last_updated)} />
+        <Task {content} date={getFormattedLocalTime(date)} {important} {completed} {_id} last_updated={getFormattedLocalTime(last_updated)} />
     {/each}
 {/await}
