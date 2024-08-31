@@ -57,6 +57,8 @@
             toggleTask(id, true);
         }
     };
+
+    let touchtestEl;
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -65,4 +67,20 @@
     <TaskContainer bind:tasks={tasks} />
 </div>
 
-v 1.0.2
+v 1.0.3
+
+<div bind:this={touchtestEl} class="touchtest" on:touchstart={
+    touchtestEl.textContent = "touched"
+}>Press</div>
+
+<style>
+    .touchtest {
+        background-color: gray;
+        width: 50%;
+        height: 50vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: auto;
+    }
+</style>
