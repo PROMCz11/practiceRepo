@@ -24,26 +24,18 @@
         .then(json => console.log(json))
         .catch(err => console.log(err))
     }
-
-    let contentElement;
-
-    const resizeTextarea = () => {
-        contentElement.style.height = `1.5rem`;
-        let scHeight = contentElement.scrollHeight;
-        contentElement.style.height = `${scHeight}px`;
-    }
 </script>
 
 <div class="task" id="{_id}">
     <div>
-        <!-- <input class="content" type="text" bind:value={content} on:change={() => updateTaskContent(content)}> -->
-         <textarea bind:this={contentElement} bind:value={content} class="content" placeholder="Type something here..." on:input={resizeTextarea} on:keyup={e => {
-            if(e.key === "Enter") {
-                e.target.value = e.target.value.trim();
+        <p contenteditable class="content" on:keydown={e => {
+            if (e.key === 'Enter') {
+                e.preventDefault(); 
                 e.target.blur();
-                resizeTextarea()
+                updateTaskContent(content);
+                // document.execCommand('formatBlock', false, 'p');
             }
-         }} on:change={() => updateTaskContent(content)}></textarea>
+        }}>{content}</p>
         <p class="date">{date}</p>
         <p class="last_updated">{last_updated}</p>
     </div>
@@ -68,16 +60,6 @@
     }
 
     .content {
-        background: transparent;
-        border: none;
-        color: white;
-        padding: 0;
-        height: 1.5rem;
-        resize: none;
-    }
-
-    .content::-webkit-scrollbar {
-        width: 0;
     }
 
     .toggle-container {
