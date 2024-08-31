@@ -33,10 +33,9 @@
                 e.preventDefault(); 
                 e.target.blur();
                 updateTaskContent(content);
-                console.log(content);
                 // document.execCommand('formatBlock', false, 'p');
             }
-        }}></p>
+        }} on:blur={() => {updateTaskContent(content)}}></p>
         <p class="date">{date}</p>
         <p class="last_updated">{last_updated}</p>
     </div>
