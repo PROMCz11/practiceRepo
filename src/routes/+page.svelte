@@ -1,73 +1,46 @@
 <script>
-    import Task from "../lib/Task.svelte";
-    import preloader from "$lib/assets/preloader.svg";
+    import TaskContainer from "../lib/TaskContainer.svelte";
 
-    const getFormattedLocalTime = (millisecondsSinceEpoch) => {
-        const dateFromMilliseconds = new Date(millisecondsSinceEpoch);
-        const options = {
-            weekday: 'short',
-            day: 'numeric',
-            month: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        };
-        const formattedLocalTime = dateFromMilliseconds.toLocaleTimeString(undefined, options).split(",").join("");
-        return formattedLocalTime;
-    }
+    let tasks;
 
-    let tasks = [];
-
-    // tasks = [
-    //     {
-    //         content: "First",
-    //         date: new Date().getTime(),
-    //         important: 0,
-    //         completed: 0,
-    //         _id: "45"
-    //     },
-    //     {
-    //         content: "Second",
-    //         date: new Date().getTime(),
-    //         important: 0,
-    //         completed: 0,
-    //         _id: "234"
-    //     },
-    //     {
-    //         content: "Third",
-    //         date: new Date().getTime(),
-    //         important: 0,
-    //         completed: 0,
-    //         _id: "135"
-    //     },
-    //     {
-    //         content: "Fourth",
-    //         date: new Date().getTime(),
-    //         important: 0,
-    //         completed: 0,
-    //         _id: "325"
-    //     }
-    // ]
-
-    const getTasks = async () => {
-        const res = await fetch("https://task-manager-back-end-7gbe.onrender.com/api/tasks", {
-            method: "POST",
-            body: JSON.stringify({
-                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI2NmQwOWJkY2Q2MDIyYTZhOTc5OTY4YWYiLCJpYXQiOjE3MjQ5NjQ4NTMsImV4cCI6NDMxNjk2NDg1M30.0HquznnuvoYXtpZrtBsnpdCBZvPqcWpzS_vBTZx3v_Q"
-            }),
-            headers: {
-            "Content-type": "application/json; charset=UTF-8"
-            }
-        })
-        const json = await res.json();
-        if(json.status) {
-            tasks = json.data.tasks;
-            return json.data.tasks;
+    const toggleTask = (id, toggleCompleted) => {
+        if(toggleCompleted) {
+            const taskIndex = tasks.indexOf(tasks.find(task => task._id === id));
+            const newCompleted = !tasks[taskIndex].completed
+            tasks[taskIndex].completed = newCompleted;
+            fetch(`https://task-manager-back-end-7gbe.onrender.com/api/tasks/update/${id}`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI2NmQwOWJkY2Q2MDIyYTZhOTc5OTY4YWYiLCJpYXQiOjE3MjQ5NjQ4NTMsImV4cCI6NDMxNjk2NDg1M30.0HquznnuvoYXtpZrtBsnpdCBZvPqcWpzS_vBTZx3v_Q",
+                    completed: newCompleted,
+                    last_updated: new Date().getTime()
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+            .then(res => res.json())
+            .then(json => console.log(json))
+            .catch(err => console.log(err));
         }
-
         else {
-            console.log(json.message);
-            return null;
+            const taskIndex = tasks.indexOf(tasks.find(task => task._id === id));
+            const newImportant = !tasks[taskIndex].important;
+            tasks[taskIndex].important = newImportant;
+            fetch(`https://task-manager-back-end-7gbe.onrender.com/api/tasks/update/${id}`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI2NmQwOWJkY2Q2MDIyYTZhOTc5OTY4YWYiLCJpYXQiOjE3MjQ5NjQ4NTMsImV4cCI6NDMxNjk2NDg1M30.0HquznnuvoYXtpZrtBsnpdCBZvPqcWpzS_vBTZx3v_Q",
+                    important: newImportant,
+                    last_updated: new Date().getTime()
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+            .then(res => res.json())
+            .then(json => console.log(json))
+            .catch(err => console.log(err));
         }
     }
 
@@ -75,14 +48,12 @@
         const target = e.target;
         if(target.classList.contains("important-toggle")) {
             const id = target.parentElement.parentElement.id;
-            const taskIndex = tasks.indexOf(tasks.find(task => task._id === id));
-            tasks[taskIndex].important = !tasks[taskIndex].important;
+            toggleTask(id, false);
         }
 
         else if(target.classList.contains("completed-toggle")) {
             const id = target.parentElement.parentElement.id;
-            const taskIndex = tasks.indexOf(tasks.find(task => task._id === id));
-            tasks[taskIndex].completed = !tasks[taskIndex].completed;
+            toggleTask(id, true);
         }
     };
 </script>
@@ -90,11 +61,5 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div on:click={clickHandler}>
-    {#await getTasks()}
-    <img style="width: 50%; margin: auto;" src={preloader} alt="preloader">
-    {:then}
-        {#each tasks as { content, date, important, completed, _id, last_updated }}
-            <Task {content} date={getFormattedLocalTime(date)} {important} {completed} {_id} last_updated={getFormattedLocalTime(last_updated)} />
-        {/each}
-    {/await}
+    <TaskContainer bind:tasks={tasks} />
 </div>
