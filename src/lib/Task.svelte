@@ -89,6 +89,7 @@
     }
 
     .content {
+        user-select: unset;
     }
 
     .toggle-container {
