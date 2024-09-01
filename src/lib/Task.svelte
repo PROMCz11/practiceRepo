@@ -1,122 +1,80 @@
 <script>
-	import { blur } from "svelte/transition";
+    export let _id = "", content = "", date = 0, important = false, completed = false, last_updated = 0;
 
-    export let completed = 0;
-    export let important = 0;
-    export let content = '';
-    export let date = new Date().getTime();
-    export let last_updated = date;
-    export let _id = 0;
-
-    const updateTaskContent = (content) => {
-        fetch(`https://task-manager-back-end-7gbe.onrender.com/api/tasks/update/${_id}`, {
-            method: "PATCH",
-            body: JSON.stringify({
-                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI2NmQwOWJkY2Q2MDIyYTZhOTc5OTY4YWYiLCJpYXQiOjE3MjQ5NjQ4NTMsImV4cCI6NDMxNjk2NDg1M30.0HquznnuvoYXtpZrtBsnpdCBZvPqcWpzS_vBTZx3v_Q",
-                content: content,
-                last_updated: new Date().getTime()
-            }),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8"
-            }
-        })
-        .then(res => res.json())
-        .then(json => console.log(json))
-        .catch(err => console.log(err))
-    }
-
-    let touchTimer = 0;
-    let pressed = false;
-    let intervalID;
-    $: {
-        if(touchTimer > 150) { // add a condition which states that the event hasn't happened yet, to prevent the code running over and over for no reason
-            // pressed = true;
-            console.log("event");
-        }
-    }
-    const expandTask = () => {
-        console.log("expanding");
-        pressed = true;
-        intervalID = setInterval(() => {
-            touchTimer = touchTimer + 1;
-        }, 1);
-    }
-
-    const shrinkTask = () => {
-        console.log("shrinking");
-        pressed = false;
-        touchTimer = 0;
-        clearInterval(intervalID);
-    }
+    $: console.log(important);
 </script>
 
-<div class:pressed class="task" id="{_id}" on:touchstart={expandTask} on:touchend={shrinkTask}>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div class="task" class:important class:completed on:click={e => {
+    
+}}>
+
     <div>
-        <p bind:textContent={content} contenteditable class="content" on:keydown={e => {
-            if (e.key === 'Enter') {
-                e.preventDefault(); 
-                e.target.blur();
-                updateTaskContent(content);
-                // document.execCommand('formatBlock', false, 'p');
-            }
-        }} on:blur={() => {updateTaskContent(content)}}></p>
+        <p class="content" contenteditable bind:textContent={content}></p>
         <p class="date">{date}</p>
-        <p class="last_updated">{last_updated}</p>
     </div>
     <div class="toggle-container">
-        <div class:active={important} class="circle important-toggle"></div>
-        <div class:active={completed} class="circle completed-toggle"></div>
+        <button class="circle important-toggle"
+        on:click={() => important = !important}></button>
+        <button class="circle completed-toggle"
+        on:click={() => completed = !completed}></button>
     </div>
 </div>
 
 <style>
-    :root {
-        --clr-accent: #A0153E;
-        --clr-accent-rgb-for-alpha: 160, 21, 62;
-    }
-
     .task {
-        border-bottom: 1px solid #333333;
-        padding: 1rem;
+        border: 1px solid #757575;
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        gap: 1rem;
+        padding: .5rem;
+        border-radius: .5rem;
+        transition: all 100ms ease-in-out;
     }
 
-    .content {
-        user-select: auto;
-        background-color: gray;
+    .task.important {
+        border: 1px solid #FFC107;
     }
 
-    .toggle-container {
-        display: flex;
-        gap: .5rem;
+    .task.completed {
+        border: 1px solid #00FF37;
+    }
+
+    .task.completed .content {
+        text-decoration: line-through;
+    }
+
+    .date {
+        color: #757575;
     }
 
     .circle {
         width: 40px;
         height: 40px;
+        background-color: #1a1a1a;
         border-radius: 50%;
-        background-color: #222222;
+    }
+
+    .toggle-container {
+        display: flex;
+        gap: .5rem;
+        margin-left: auto;
     }
 
     .important-toggle {
-        border: 1px solid var(--clr-accent);
+        border: 1px solid #FFC107;
     }
 
     .completed-toggle {
-        border: .5px solid #00FF37;
+        border: 1px solid #00FF37;
     }
 
-    .important-toggle.active {
-        background-color: var(--clr-accent);
+    .task.important .important-toggle {
+        background-color: #FFC107;
     }
 
-    .completed-toggle.active {
+    .task.completed .completed-toggle {
         background-color: #00FF37;
-    }
-
-    .date {
-        color: #757575;
     }
 </style>

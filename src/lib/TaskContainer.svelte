@@ -1,24 +1,7 @@
 <script>
-    import Task from "$lib/Task.svelte";
-    import preloader from "$lib/assets/preloader.svg";
-
     export let tasks = [];
-
-    let isLoadedFromServer = false;
-
-    const getFormattedLocalTime = (millisecondsSinceEpoch) => {
-        const dateFromMilliseconds = new Date(millisecondsSinceEpoch);
-        const options = {
-            weekday: 'short',
-            day: 'numeric',
-            month: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        };
-        const formattedLocalTime = dateFromMilliseconds.toLocaleTimeString(undefined, options).split(",").join("");
-        return formattedLocalTime;
-    }
+    
+	import Task from "./Task.svelte";
 
     const getTasks = async () => {
         const res = await fetch("https://task-manager-back-end-7gbe.onrender.com/api/tasks", {
@@ -27,28 +10,33 @@
                 token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySWQiOiI2NmQwOWJkY2Q2MDIyYTZhOTc5OTY4YWYiLCJpYXQiOjE3MjQ5NjQ4NTMsImV4cCI6NDMxNjk2NDg1M30.0HquznnuvoYXtpZrtBsnpdCBZvPqcWpzS_vBTZx3v_Q"
             }),
             headers: {
-            "Content-type": "application/json; charset=UTF-8"
+                "Content-type": "application/json; charset=UTF-8"
             }
         })
-        const json = await res.json();
-        if(json.status) {
-            tasks = json.data.tasks;
-            return json.data.tasks;
-        }
 
-        else {
-            console.log(json.message);
-            return null;
-        }
+        const json = await res.json();
+        tasks = json.data.tasks;
+        return tasks;
     }
+
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-{#await getTasks()}
-    <img style="width: 50%; margin: auto;" src={preloader} alt="preloader">
-{:then}
-    {#each tasks as { content, date, important, completed, _id, last_updated }}
-        <Task {content} date={getFormattedLocalTime(date)} {important} {completed} {_id} last_updated={getFormattedLocalTime(last_updated)} />
-    {/each}
-{/await}
+<div class="task-container">
+    {#await getTasks()}
+    Loading...
+    {:then tasks}
+        {#each tasks as { _id, content, date, important, completed, last_updated }}
+        <Task {_id} {content} {date} {important} {completed} {last_updated}/>
+        {/each}
+    {/await}
+</div>
+
+<style>
+    .task-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+
+        padding: 1rem;
+    }
+</style>
