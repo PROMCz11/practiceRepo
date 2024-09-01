@@ -89,7 +89,8 @@
     }
 
     .content {
-        user-select: unset;
+        user-select: auto;
+        background-color: gray;
     }
 
     .toggle-container {
