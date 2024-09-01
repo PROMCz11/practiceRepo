@@ -65,7 +65,7 @@
     <TaskContainer bind:tasks={tasks} />
 </div>
 
-<div style="user-select: none;">v 1.0.7</div>
+<!-- <div style="user-select: none;">v 1.0.7</div> -->
 
 <style>
     .touchtest {
