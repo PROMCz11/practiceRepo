@@ -80,7 +80,7 @@
     .task-bottom button {
         background-color: transparent;
         border: none;
-        width: 40px;
+        scale: .8;
     }
 
     .task.important {
