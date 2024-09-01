@@ -81,11 +81,6 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        transition: scale 200ms ease-in-out;
-    }
-
-    div {
-        user-select: none;
     }
 
     .content {
@@ -123,9 +118,5 @@
 
     .date {
         color: #757575;
-    }
-
-    .pressed {
-        scale: .95;
     }
 </style>
