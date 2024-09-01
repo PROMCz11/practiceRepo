@@ -24,9 +24,33 @@
         .then(json => console.log(json))
         .catch(err => console.log(err))
     }
+
+    let touchTimer = 0;
+    let pressed = false;
+    let intervalID;
+    $: {
+        if(touchTimer > 150) { // add a condition which states that the event hasn't happened yet, to prevent the code running over and over for no reason
+            // pressed = true;
+            console.log("event");
+        }
+    }
+    const expandTask = () => {
+        console.log("expanding");
+        pressed = true;
+        intervalID = setInterval(() => {
+            touchTimer = touchTimer + 1;
+        }, 1);
+    }
+
+    const shrinkTask = () => {
+        console.log("shrinking");
+        pressed = false;
+        touchTimer = 0;
+        clearInterval(intervalID);
+    }
 </script>
 
-<div class="task" id="{_id}">
+<div class:pressed class="task" id="{_id}" on:touchstart={expandTask} on:touchend={shrinkTask}>
     <div>
         <p bind:textContent={content} contenteditable class="content" on:keydown={e => {
             if (e.key === 'Enter') {
@@ -57,6 +81,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        transition: scale 200ms ease-in-out;
     }
 
     .content {
@@ -92,5 +117,9 @@
 
     .date {
         color: #757575;
+    }
+
+    .pressed {
+        scale: .95;
     }
 </style>

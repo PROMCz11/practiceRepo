@@ -57,10 +57,6 @@
             toggleTask(id, true);
         }
     };
-
-    let touchtestEl;
-    let intervalID;
-    let touchTimer = 0;
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -69,17 +65,7 @@
     <TaskContainer bind:tasks={tasks} />
 </div>
 
-v 1.0.4
-
-<div bind:this={touchtestEl} class="touchtest" on:touchstart={() => {
-    // touchtestEl.textContent = "touched"
-    intervalID = setInterval(() => {
-        touchTimer++;
-    }, 1);
-}} on:touchend={() => {
-    touchTimer = 0;
-    clearInterval(intervalID);
-}}>{touchTimer}</div>
+v 1.0.5
 
 <style>
     .touchtest {
