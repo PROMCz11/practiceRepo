@@ -65,7 +65,7 @@
     <TaskContainer bind:tasks={tasks} />
 </div>
 
-v 1.0.5
+v 1.0.6
 
 <style>
     .touchtest {

@@ -84,6 +84,10 @@
         transition: scale 200ms ease-in-out;
     }
 
+    div {
+        user-select: none;
+    }
+
     .content {
     }
 
